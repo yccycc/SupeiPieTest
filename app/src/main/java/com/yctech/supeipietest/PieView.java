@@ -6,11 +6,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 public class PieView extends GLSurfaceView implements SurfaceHolder.Callback {
@@ -20,6 +22,7 @@ public class PieView extends GLSurfaceView implements SurfaceHolder.Callback {
     private CircleHandler mHandler = new CircleHandler();
     private static int mForCircleChange;
     private String mDealPecent = "50%";
+    private int mPecentCount;
 
     public PieView(Context context) {
         super(context,null);
@@ -72,6 +75,7 @@ public class PieView extends GLSurfaceView implements SurfaceHolder.Callback {
         canvas.drawBitmap(circles[mForCircleChange % 2], 0, 0, null);
 
         canvas.drawText(mDealPecent, 100, 100, mPaint);
+
         mSurfaceHolder.unlockCanvasAndPost(canvas);
     }
 
@@ -92,5 +96,19 @@ public class PieView extends GLSurfaceView implements SurfaceHolder.Callback {
             mForCircleChange++;
             sendEmptyMessageDelayed(0, 500);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int tx = (int) event.getX();
+        int ty = (int) event.getY();
+        Rect rect = new Rect(0,0,200,200);
+        if(rect.contains(tx,ty))
+        {
+            Log.i("bitch-onTouchEvent","onTouchEvent");
+            mDealPecent = ++mPecentCount + "%";
+        }
+
+        return super.onTouchEvent(event);
     }
 }
